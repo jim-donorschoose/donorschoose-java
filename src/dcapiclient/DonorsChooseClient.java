@@ -6,6 +6,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.SerializationConfig;
+
 public class DonorsChooseClient {
 
 	/*
@@ -32,11 +36,13 @@ public class DonorsChooseClient {
 					(conn.getInputStream())));
 
 			String output;
-			System.out.println("Output from Server .... \n");
+			StringBuilder completeJSONResponse = new StringBuilder();
 			while ((output = br.readLine()) != null) {
-				System.out.println(output);
-				
+				completeJSONResponse.append(output);
 			}
+			
+			ObjectReader reader = new ObjectMapper().readerFor(ProjectListing.class);
+			ProjectListing listing = reader.readValue(completeJSONResponse.toString());
 
 			conn.disconnect();
 
